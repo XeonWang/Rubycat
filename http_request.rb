@@ -25,6 +25,10 @@ class HttpRequest
 		end
 	end
 
+	def get_binding
+		binding
+	end
+
 	def to_s
 		@request.to_s
 	end

@@ -1,9 +1,11 @@
 require "socket"
+require "erb"
 require_relative "http_request"
 require_relative "processer"
 
 server = TCPServer.open("localhost", 5000)
-threads = []
+Thread.abort_on_exception = true
+
 loop{
 
 	Thread.new(server.accept) do |net_request|
@@ -12,10 +14,8 @@ loop{
 		Thread.current.kill unless first_line
 		http_request = HttpRequest.new(first_line, net_request)
 		processer = Processer.new
-		resource = processer.service(http_request)
-		resource.each do |line|
-			net_request.puts line
-		end
+		response = processer.service(http_request)
+		net_request.puts response
 		net_request.close
 	end
 }
